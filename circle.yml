@@ -3,6 +3,7 @@ general:
     only:
       - master
       - publish
+      - digital-ocean
 machine:
   python:
     version: 2.7.10
