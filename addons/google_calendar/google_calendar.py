@@ -426,7 +426,7 @@ class google_calendar(osv.AbstractModel):
                 if type == "write":
                     for oe_attendee in event['attendee_ids']:
                         if oe_attendee.email == partner_email:
-                            calendar_attendee_obj.write(cr, uid, [oe_attendee.id], {'state': google_attendee['responseStatus']}, context=context)
+                            calendar_attendee_obj.write(cr, uid, [oe_attendee.id], {'state': google_attendee['responseStatus'], 'google_internal_event_id': single_event_dict.get('id')}, context=context)
                             google_attendee['found'] = True
                             continue
 
@@ -623,7 +623,7 @@ class google_calendar(osv.AbstractModel):
                         update_date = datetime.strptime(response['updated'], "%Y-%m-%dT%H:%M:%S.%fz")
                         ev_obj.write(cr, uid, att.event_id.id, {'oe_update_date': update_date})
                         new_ids.append(response['id'])
-                        att_obj.write(cr, uid, [att.id], {'google_internal_event_id': response['id'], 'oe_synchro_date': update_date})
+                        att_obj.write(cr, uid, [att.id for att in att.event_id.attendee_ids], {'google_internal_event_id': response['id'], 'oe_synchro_date': update_date})
                         cr.commit()
                     else:
                         _logger.warning("Impossible to create event %s. [%s] Enable DEBUG for response detail.", att.event_id.id, st)
